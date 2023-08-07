@@ -110,7 +110,17 @@ def get_title_length(title):
     return end +.02
 
 
-def get_times(subs,last_word):
+"""
+Gets the time of when the last word of the post title is read
+
+        Parameters
+        ----------
+        subs : list
+            The 2D list of timestamps and strings displayed during timestamps
+        last_word : string
+            The last word in the title of the post
+"""
+def get_times(subs: list,last_word: str) -> float:
     
     for item in subs:
         if last_word in item[1].split():
