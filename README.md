@@ -7,4 +7,5 @@ Creates the popular TikTok reddit stories  with the Minecraft parkour in the bac
 link: https://www.youtube.com/watch?v=n_Dv4JMiwK8
 
 Download the minecraft video and change the aspect ratio to 9:16
+
 Rename/convert the video to "Minecraft_Background.mov"
