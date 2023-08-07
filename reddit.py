@@ -6,20 +6,24 @@ from selenium.webdriver.common.by import By
 from PIL import Image
 from io import BytesIO
 
-"""
-Gets the top ten reddit posts and stores the post id with its title into a dicitonary "posts"
 
-Dicitionary "Posts": key = post.id  | val = post.title
+def getRandomHotPost(subreddit: str) -> tuple:
+    """
+        Gets the top ten reddit posts and stores the post id with its title into a dicitonary "posts"
+
+        Dicitionary "Posts": key = post.id  | val = post.title
 
         Parameters
         ----------
         subreddit : str
             The name of the subreddit your searching through
 
-returns a list of a randomnly selected post with its id at index 0 and title at index 1
-"""
-def getRandomHotPost(subreddit: str) -> tuple:
-
+        Return
+        ------
+        random.choice(list(posts.items())) : tuple
+            A tuple of the randomnly selected post 
+            Example:  (post.id, post.title)
+    """
     sub = reddit.subreddit(f'{subreddit}').hot()
     posts = {}
     for count,post in enumerate(sub):
@@ -29,87 +33,107 @@ def getRandomHotPost(subreddit: str) -> tuple:
 
     return random.choice(list(posts.items()))
 
-"""
-Gets the top comment from the reddit post
-
-        Parameters
-        ----------
-        postId : str
-            The id of the post from the subreddit
-
-returns a str of the comment
-"""
 def getTopComment(postId: str) -> str:
-  submission = reddit.submission(f"{postId}")
-  maxScore = 0
-  topComment = ""
-  topID = ""
+    """
+    Gets the top comment from the reddit post
 
-  #searches through every comment in the post
-  for top_level_comment in submission.comments:
+    Parameters
+    ----------
+    postId : str
+        The id of the post from the subreddit
 
-    if isinstance(top_level_comment, MoreComments):
-        continue
-    #Makes sure the post has more than 800 characters, so the audio is longer then a minute
-    if len(top_level_comment.body) > 800:
+    Return
+    ------
+    topComment : str
+        The text from the top comment of the reddit post
+    """
+    submission = reddit.submission(postId)
+    maxScore = 0
+    topComment = ""
+    topID = ""
 
-        #Gets the comment with the most amount of upvotes
-        if top_level_comment.score > maxScore:
-            maxScore = top_level_comment.score
-            topComment = top_level_comment.body
-            topID = top_level_comment.id
+    #searches through every comment in the post
+    for top_level_comment in submission.comments:
 
-  return topComment
+        if isinstance(top_level_comment, MoreComments):
+            continue
+        #Makes sure the post has more than 800 characters, so the audio is longer then a minute
+        if len(top_level_comment.body) > 800:
 
-"""
-Gets the screenshot of the reddit post
+            #Gets the comment with the most amount of upvotes
+            if top_level_comment.score > maxScore:
+                maxScore = top_level_comment.score
+                topComment = top_level_comment.body
+                topID = top_level_comment.id
 
-        Parameters
-        ----------
-        url : str
-            The url to the the reddit post 
-        postId : str
-            The id of the post from the subreddit
+    return topComment
 
-creates a png file called "reddit_post_ss.png"
-"""
+
 def get_screenshot(url: str,postId: str):
+    """
+    Gets the screenshot of the reddit post
 
+    Parameters
+    ----------
+    url : str
+        The url to the the reddit post 
+    postId : str
+        The id of the post from the subreddit
+
+    creates a png file called "reddit_post_ss.png"
+    """
+
+    #Sets up Chrome webdriver
     driver = webdriver.Chrome()
+    #Opens Website
     driver.get(url)
+
+    #We find the post in the html through the postId
     element = driver.find_element(By.ID, f"t3_{postId}")
+
+    #Get the location and Size
     location = element.location
     size = element.size
-    png = driver.get_screenshot_as_png() # saves screenshot of entire page
+
+    #Saves screenshot of entire page
+    png = driver.get_screenshot_as_png()
+
+    #Closes Webdriver
     driver.quit()
 
-    im = Image.open(BytesIO(png)) # uses PIL library to open image in memory
+    #Uses PIL library to open image in memory
+    im = Image.open(BytesIO(png)) 
 
+    #Using the location and size of the post container, we can establish the dimensions of the post
     left = (location['x']*1.85)
     top = location['y'] *2
     right = left + (size['width']*2.15)
     bottom = top + (size['height']*2.14)
 
-    #1215 x 420
-    im = im.crop((left, top, right, bottom)) # defines crop points
-    im.save('reddit_post_ss.png') # saves new cropped image
+    #Crops and Saves image as 'reddit_post_ss.png'
+    im = im.crop((left, top, right, bottom))
+    im.save('reddit_post_ss.png')
     
 
-"""
-Creates the url for the reddit posts
-
-        Parameters
-        ----------
-        subreddit : str
-            The name of the subreddit
-        postId : str
-            The id of the post from the subreddit
-        title : str
-            The title of the post from the subreddit
-
-returns a string form of the url to the reddit post
-"""
 def create_url(subreddit: str, postId: str, title: str) -> str:
+
+    """
+    Creates the url for the reddit posts
+
+    Parameters
+    ----------
+    subreddit : str
+        The name of the subreddit
+    postId : str
+        The id of the post from the subreddit
+    title : str
+        The title of the post from the subreddit
+
+    Return
+    ------
+    url : str
+        A string form of the url to the reddit post
+    """
 
     punc = '''!()-[]}{;:'"\,<>./?@#$%^&*_~''“”'''
     title = title.lower()
@@ -123,7 +147,3 @@ def create_url(subreddit: str, postId: str, title: str) -> str:
             
 
     return f'https://www.reddit.com/r/{subreddit}/comments/{postId}/{title}/'
-
-
-
-
