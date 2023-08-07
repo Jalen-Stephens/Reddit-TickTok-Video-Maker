@@ -51,5 +51,3 @@ def create_final_video(title):
                         temp_audiofile='temp-audio.m4a', 
                         remove_temp=True
                         )
-
-create_final_video('Anyone ever find a dead body unintentionally? What’s the story?')
