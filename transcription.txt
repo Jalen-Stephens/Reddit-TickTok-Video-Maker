@@ -1,0 +1,2 @@
+#The reddit comment will be split into multiple lines based off the words and their lengths
+#Creates each string that will be displayed for 'subscription.txt'
