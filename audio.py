@@ -1,7 +1,4 @@
-
 from mutagen.mp3 import MP3
-import inflect
-
 
 def get_audio_length() -> float:
     """
@@ -155,7 +152,5 @@ def get_times(subs: list,last_word: str) -> float:
     print(last_word)
     for item in subs:
         if last_word in item[1].split():
-            print(item[0][1] + .001)
             return item[0][1] + .001, 
             
-
