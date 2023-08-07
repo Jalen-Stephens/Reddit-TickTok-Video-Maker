@@ -5,12 +5,6 @@ from video import  create_final_video
 
 
 #sub = input("Enter a subreddit you'd like to search")
-popular_subreddits = [
-
-    'AskReddit',
-    'AITA'
-
-]
 sub = 'AskReddit'
 
 ans = 'n'
